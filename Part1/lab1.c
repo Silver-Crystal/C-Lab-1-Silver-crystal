@@ -19,10 +19,10 @@
 //   stdio.h  - contains declaration of printf()
 //   stdlib.h - contains declaration of malloc() and free()
 //   time.h   - contains declaration of clock()
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <assert.h> //  contains declaration of assert()
+#include <stdio.h>  // contains declaration of print()
+#include <stdlib.h> // contains declaration of malloc() and free()
+#include <time.h>   // contains declaration of clock()
 
 // This #define tells the C preprocessor to do a straight
 // substitution of instances of the text "SIZE" in the code
@@ -61,7 +61,8 @@ void part1() {
 
   // Q1: The following line is an example. Feel free to
   // copy and/or modify it as needed for part 1 of this lab.
-  printf("x & x = %i\n %x", x & x, &x);
+  // printf("x & x = %i\n %x", x & x, &x);
+  printf("x & x = %i\n %p", x & x, &x);
 }
 
 // HELPER FUNCTION - fillArray()
@@ -109,7 +110,9 @@ void part2() {
   // Q2.1: What happens if the second argument is greater
   // than the size of the array (10)?
   fillArray(array, 10);
-
+  // fillArray(array, 50);
+  // assumption is, that maybe assert fails and thus the program crashes.
+  // was wrong ig, c being c, we were in fact able to access the memory there, then after the program finished running, it crashed(mind you after it completed the function calls, both of the fillArray ones, ) with 'stack smashing detected' (when exiting the part2() function)
   int value = 295;
 
   // In C, we can take the address of something using the
@@ -122,6 +125,13 @@ void part2() {
   // is stored in value after the following code executes?
   // Explain why the result is what it is.
   fillArray(&value, 1);
+  // the value stored would probably be 2, 
+  // personally do not understand the question, what are u referring to smh
+  // alright, so in the end an array is basically a sequence of memory address's that have been allocated to us for our usage as we deem necessary.
+  // the variable can also be assumed to be an array with just 1 member, with the value stored inside it being 295
+  // so we send the memory address, which is treated as a pointer by fillArray. where they loop one time and put in 2.
+  // (there are also not many checks in c as we know, and c does not check if the memory address is whatever you want us to think idk)
+  // (f)(am i cooked) 
 }
 
 // PART 3 Definition - Scores
@@ -166,6 +176,8 @@ void part3() {
   // case, the start of an array) rather than an address
   // of a Scores struct.
   fillArray((int *)&student, 4);
+  // T-T 
+
 
   // We can confirm that fillArray updated the values
   // in the Scores struct:
@@ -184,7 +196,14 @@ void part3() {
   // Order of operations can be confusing, so parentheses
   // generally improve readability.
 
-  // assert( student == 8 );
+   //printf("asserting if student[2] == 8\n\n\n");
+   // was trying this earlier T-T ^ ugh, whatever, i got there
+   // assert( ((int*)(&student))([2]) == 8 );
+   
+   assert ( ((int*)&student)[2] == 8);
+
+  // printf("hehe, passed, trying fail now, student[2] == 0\n");
+//   assert( ((int *)&student) [2] == 0);
 }
 
 // HELPER FUNCTION - bigArrayIndex()
@@ -229,8 +248,50 @@ void part4() {
   }
 
   // stop timer and print result
-  printf("Approximate runtime = %d\n", (int)(clock() - timer));
+  printf("Approximate runtime for ijk= %d\n", (int)(clock() - timer));
+ 
+/*  int *bigArray2 = (int *)malloc(SIZE * SIZE * SIZE * sizeof(int));
+  // start timer
+  timer = clock();
+
+  // Q4.1: Try changing the order of the loops (switch the
+  // "for" lines). The original ordering below is
+  // considered "ijk".  Which loop orderings are fastest?
+  for (int j = 0; j < SIZE; j++) {
+    for (int i = 0; i < SIZE; i++) {
+      for (int k = 0; k < SIZE; k++) {
+        bigArray[bigArrayIndex(i, j, k)] = i + j + k;
+      }
+    }
+  }
+
+  // stop timer and print result
+  printf("Approximate runtime for jik= %d\n", (int)(clock() - timer));
+  
+ int *bigArray3 = (int *)malloc(SIZE * SIZE * SIZE * sizeof(int));
+  // start timer
+  timer = clock();
+
+  // Q4.1: Try changing the order of the loops (switch the
+  // "for" lines). The original ordering below is
+  // considered "ijk".  Which loop orderings are fastest?
+  for (int i = 0; i < SIZE; i++) {
+    for (int j = 0; j < SIZE; j++) {
+      for (int k = 0; k < SIZE; k++) {
+        bigArray[bigArrayIndex(i, j, k)] = i + j + k;
+      }
+    }
+  }
+
+  // stop timer and print result
+  printf("Approximate runtime for ijk= %d\n", (int)(clock() - timer));
+  
+*/
+
 }
+
+// probably the [i][j][k] would be the fastest cause we are accessing memory blocks that are next to each other and we are incrementing in such a way that we would be accessing the things as if they were just one long array
+
 
 // PART 5 - Memory Allocation
 //
@@ -261,6 +322,7 @@ void part5() {
   // use memory, which is often invaluable for C and
   // C++ programming.
   free(class_grades);
+  // when free is commented, valgrind gives us 80 bytes of memory that wasn't free.
 }
 
 // main() is the entry point of the program. It has two
@@ -271,13 +333,13 @@ void part5() {
 int main(int argc, char *argv[]) {
   // input checking - note that the executable name is
   // included in the argument count
-  if (argc != 2 || !atoi(argv[1])) {
+  if (argc != 2 || !atoi(argv[1])) {    // atoi is for creating a string to integer checking if the second letter of the string is 0 
     printf("Usage: %s <num>\n", argv[0]);
     exit(0);
   }
 
   // atoi() is a library function that converts a String
-  // to an integer
+  // to an integer      // T-T lmfaoooo
   switch (atoi(argv[1])) {
   case 1:
     part1();
